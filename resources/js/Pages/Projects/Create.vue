@@ -1,7 +1,5 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import Checkbox from "@/Components/Checkbox.vue";
-import GuestLayout from "@/Layouts/GuestLayout.vue";
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
@@ -12,21 +10,21 @@ defineProps({
     skills: Array,
 });
 
-// store new project;
+// Store new project
 const form = useForm({
     name: "",
     image: null,
-    skill_id: "",
+    skill_id: "", // Single skill ID
     project_url: "",
 });
 
 const submit = () => {
-    form.post(route("projects.store"), {});
+    form.post(route("projects.store"));
 };
 </script>
 
 <template>
-    <Head title="New Project"></Head>
+    <Head title="New Project" />
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-2xl text-gray-800 leading-tight">
@@ -35,15 +33,16 @@ const submit = () => {
         </template>
 
         <div class="py-12 flex justify-center items-center">
-            <div
-                class="bg-white shadow-md rounded-lg p-8 max-w-lg w-full sm:px-6 lg:px-8"
-            >
+            <div class="bg-white shadow-md rounded-lg p-8 max-w-lg w-full">
                 <form @submit.prevent="submit">
-                    <div>
+                    <!-- Skill -->
+                    <div class="mb-6">
+                        <InputLabel for="skill_id" value="Skill" />
                         <select
                             v-model="form.skill_id"
                             id="skill_id"
-                            class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                            name="skill_id"
+                            class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
                         >
                             <option
                                 v-for="skill in skills"
@@ -53,14 +52,16 @@ const submit = () => {
                                 {{ skill.name }}
                             </option>
                         </select>
+                        <InputError class="mt-2" :message="form.errors.skill_id" />
                     </div>
-                    <!-- Title -->
+
+                    <!-- Project Name -->
                     <div class="mb-6">
                         <InputLabel for="name" value="Project Name" />
                         <TextInput
                             id="name"
                             type="text"
-                            class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                            class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
                             v-model="form.name"
                             autocomplete="name"
                             required
@@ -69,22 +70,18 @@ const submit = () => {
                         <InputError class="mt-2" :message="form.errors.name" />
                     </div>
 
-                    <!-- Project url -->
+                    <!-- Project URL -->
                     <div class="mb-6">
                         <InputLabel for="project_url" value="URL" />
                         <TextInput
                             id="project_url"
                             type="text"
-                            class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                            class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
                             v-model="form.project_url"
                             autocomplete="project_url"
-                            required
-                            autofocus
+                            
                         />
-                        <InputError
-                            class="mt-2 text-red-600"
-                            :message="form.errors.project_url"
-                        />
+                        <InputError class="mt-2" :message="form.errors.project_url" />
                     </div>
 
                     <!-- Image Upload -->
@@ -93,7 +90,7 @@ const submit = () => {
                         <input
                             id="image"
                             type="file"
-                            class="mt-1 block w-full text-sm text-gray-700 border border-gray-300 rounded-lg shadow-sm file:bg-blue-500 file:text-white file:font-semibold file:mr-3 file:px-4 file:py-2 focus:ring-blue-500 focus:border-blue-500"
+                            class="mt-1 block w-full text-sm text-gray-700 border border-gray-300 rounded-lg shadow-sm"
                             @change="(e) => (form.image = e.target.files[0])"
                         />
                         <InputError class="mt-2" :message="form.errors.image" />
@@ -119,24 +116,3 @@ const submit = () => {
         </div>
     </AuthenticatedLayout>
 </template>
-
-<style scoped>
-/* Additional styling for hover effects */
-input[type="file"]::-webkit-file-upload-button {
-    visibility: hidden;
-}
-input[type="file"]::before {
-    content: "Choose File";
-    display: inline-block;
-    background: #ff6700;
-    color: white;
-    font-weight: 500;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-inline-end: 10px;
-}
-input[type="file"]:hover::before {
-    background: #e55c00;
-}
-</style>

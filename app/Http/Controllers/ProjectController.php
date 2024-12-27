@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 use App\Models\Skill;
+use App\Models\Project;
 use Illuminate\Http\Request;
 
 class ProjectController extends Controller
@@ -34,9 +35,36 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all());
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'image' => ['required', 'file', 'max:4048', 'mimes:png,jpeg'], // Fixed image validation
+            'skill_id' => ['required'], // Ensure this is a single value, or use 'array' for multiple
+            'project_url' => ['required'], // Added project URL validation
+        ]);
 
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $name = time() . '.' . $image->getClientOriginalExtension();
+            $image->storeAs('public/skills', $name);
+
+            // Ensure correct model and fields
+            Project::create([
+                'skill_id' => $request->skill_id,
+                'name' => $request->name,
+                'image' => $name,
+                'project_url' => $request->project_url,
+                'user_id' => auth()->user()->id,
+            ]);
+
+            // Attach skill(s)
+            // $project->skills()->attach($request->skill_id); // Ensure skill_id is processed correctly
+
+            return redirect()->route('projects.index');
+        }
+
+        return redirect()->back()->withErrors(['image' => 'Image upload failed.']);
     }
+
 
     /**
      * Display the specified resource.

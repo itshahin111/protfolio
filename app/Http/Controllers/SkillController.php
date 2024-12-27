@@ -34,7 +34,7 @@ class SkillController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'image' => ['required', 'min:1', 'max:1024', 'mimes:png,jpeg'],
+            'image' => ['required', 'min:3', 'max:1024', 'mimes:png,jpeg'],
         ]);
         if ($request->hasFile('image')) {
             $image = $request->file('image');
