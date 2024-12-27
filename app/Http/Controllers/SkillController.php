@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use App\Models\Skill;
 use Illuminate\Http\Request;
+use App\Http\Resources\SkillResource;
 
 class SkillController extends Controller
 {
@@ -16,7 +17,8 @@ class SkillController extends Controller
         // return inertia('Skills/Index', [
         //     'skills' => auth()->user()->skills,
         // ]);
-        return Inertia::render('Skills/Index');
+        $skills = SkillResource::collection(Skill::all());
+        return Inertia::render('Skills/Index', compact('skills'));
     }
 
     /**
