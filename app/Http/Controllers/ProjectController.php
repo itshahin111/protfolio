@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ProjectResource;
 use Inertia\Inertia;
 use App\Models\Skill;
 use App\Models\Project;
@@ -17,8 +18,8 @@ class ProjectController extends Controller
         // return inertia('Projects/Index', [
         //     'projects' => auth()->user()->projects,
         // ]);
-
-        return Inertia::render('Projects/Index');
+        $projects = ProjectResource::collection(Project::with('skill')->get());
+        return Inertia::render('Projects/Index', compact('projects'));
     }
 
     /**
@@ -26,7 +27,7 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        $skills = Skill::all();
+        $projects = ProjectResource::collection(Project::all());
         return Inertia::render('Projects/Create', compact('skills'));
     }
 

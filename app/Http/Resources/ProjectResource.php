@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class SkillResource extends JsonResource
+class ProjectResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,6 +17,8 @@ class SkillResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'skill' => new SkillResource($this->whenLoaded('skill')),
+            'project_url' => $this->project_url,
             'image' => asset('storage/skills/' . $this->image)
 
         ];
